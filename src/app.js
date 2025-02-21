@@ -4,6 +4,7 @@ const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 const authRoutes = require("./routes/authRoutes");
 const taskRoutes = require("./routes/taskRoutes");
+const resetPasswordRoutes = require("./routes/resetPasswordRoutes");
 
 dotenv.config();
 
@@ -21,5 +22,6 @@ mongoose
 
 app.use("/auth", authRoutes);
 app.use("/tasks", taskRoutes);
+app.use("/reset-password", resetPasswordRoutes);
 
 module.exports = app;
