@@ -53,7 +53,6 @@ exports.resetPassword = async (req, res) => {
             resetTokenExpiration: { $gt: Date.now() },
         });
         if(!user) {
-            console.log(err)
             return res.status(400).json({ error: "Invalid or expired token"});
         }
 
