@@ -3,6 +3,7 @@ const cors = require("cors");
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 const authRoutes = require("./routes/authRoutes");
+const taskRoutes = require("./routes/taskRoutes");
 
 dotenv.config();
 
@@ -19,5 +20,6 @@ mongoose
   .catch((err) => console.error("MongoDB connection error:", err));
 
 app.use("/auth", authRoutes);
+app.use("/tasks", taskRoutes);
 
 module.exports = app;
