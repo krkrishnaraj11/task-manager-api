@@ -5,10 +5,16 @@ const bcrypt = require("bcryptjs");
 // Register a new user
 exports.signup = async (req,res) => {
     try{
-        const { username, password } = req.body;
-        const user = new User({ username, password });
+        const { email, name, password } = req.body;
+        const user = new User({ email, name, password });
         await user.save();
-        res.status(201).json({ message: "User Registered Successfully" });
+        res.status(201).json({
+            message: "User Registered Successfully",
+            user: {
+                id: user.id,
+                name: user.name,
+                email: user.email
+            } });
     } catch (err) {
         res.status(400).json({ error: err.message });
     }
@@ -17,15 +23,22 @@ exports.signup = async (req,res) => {
 // Authenticate user and return JWT
 exports.login = async (req,res) => {
     try{
-        const { username, password } = req.body;
-        const user = await User.findOne({ username });
+        const { email, password } = req.body;
+        const user = await User.findOne({ email });
         if(!user || !(await bcrypt.compare(password, user.password))) {
             return res.status(401).json({ error: "Invalid Credentials" });
         }
         const token = jwt.sign({ userId: user._id}, process.env.JWT_SECRET, {
             expiresIn: "48h",
         });
-        res.json({ token });
+        res.json({
+            token,
+            user: {
+                id: user._id,
+                email: user.email,
+                name: user.name,
+            }
+        });
     } catch (err) {
         res.status(400).json({ error: err.message });
     }

@@ -8,7 +8,7 @@ exports.requestPasswordReset = async (req, res) => {
     try{
         const { email } = req.body;
 
-        const user = await User.findOne({ username: email });
+        const user = await User.findOne({ email: email });
         if(!user){
             return res.status(404).json({ error: "User not found"});
         }
