@@ -6,15 +6,28 @@ const bcrypt = require("bcryptjs");
 exports.signup = async (req,res) => {
     try{
         const { email, name, password } = req.body;
+        const existingUser = await User.findOne({ email: email });
+        if(existingUser){
+            return res.status(400).json({ error: "Email already registered" });
+        }
         const user = new User({ email, name, password });
         await user.save();
+
+        const token = jwt.sign(
+            { userId: user._id, email: user.email },
+            process.env.JWT_SECRET,
+            { expiresIn: "48h" }
+            );
+
         res.status(201).json({
             message: "User Registered Successfully",
             user: {
-                id: user.id,
+                id: user._id,
                 name: user.name,
                 email: user.email
-            } });
+            },
+            token: token
+        });
     } catch (err) {
         res.status(400).json({ error: err.message });
     }
@@ -31,7 +44,7 @@ exports.login = async (req,res) => {
         const token = jwt.sign({ userId: user._id}, process.env.JWT_SECRET, {
             expiresIn: "48h",
         });
-        res.json({
+        res.status(201).json({
             token,
             user: {
                 id: user._id,
