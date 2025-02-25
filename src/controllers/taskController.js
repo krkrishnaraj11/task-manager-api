@@ -48,6 +48,7 @@ exports.updateTask = async (req, res) => {
         }
         res.json({
             _id: task._id,
+            title: task.title,
             description: task.description,
             completed: task.completed,
             message:"Task updated successfully"
